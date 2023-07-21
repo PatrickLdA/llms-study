@@ -1,0 +1,35 @@
+{
+    "os": "macOS-10.16-x86_64-i386-64bit",
+    "python": "3.11.4",
+    "heartbeatAt": "2023-07-21T00:40:44.779132",
+    "startedAt": "2023-07-21T00:40:44.020430",
+    "docker": null,
+    "cuda": null,
+    "args": null,
+    "state": "running",
+    "program": "<python with no main file>",
+    "host": "MacBook-Pro-de-IBM-Patrick.local",
+    "username": "patrick",
+    "executable": "/Users/patrick/opt/anaconda3/envs/langflow/bin/python",
+    "cpu_count": 4,
+    "cpu_count_logical": 8,
+    "cpu_freq": {
+        "current": 2000,
+        "min": 2000,
+        "max": 2000
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 2000,
+            "min": 2000,
+            "max": 2000
+        }
+    ],
+    "disk": {
+        "total": 465.62699127197266,
+        "used": 421.90202713012695
+    },
+    "memory": {
+        "total": 16.0
+    }
+}

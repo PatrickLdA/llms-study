@@ -1,0 +1,5 @@
+outputs/
+
+.env
+
+notebooks/watsonx_cookbook.ipynb
