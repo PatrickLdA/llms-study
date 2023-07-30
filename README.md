@@ -1,5 +1,5 @@
-# Study guides to LLM
+# [Huggingface tutorials](huggingface-tutorials/)
 
-## Chapter 1 - Managing open source LLM models with Python
-First notebook: [question_answring.ipynb](notebooks/question_answering.ipynb)
-Source: https://huggingface.co/docs/transformers/tasks/question_answering
+# [LLM with O'Reilly](llm-with-oreilly/)
+
+# [Langflow Studies](langflow-study/)

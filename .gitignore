@@ -1,5 +1,8 @@
-outputs/
-
+# .env file with sensible stuff
 .env
 
-notebooks/watsonx_cookbook.ipynb
+# Output directories
+*/outputs/
+
+# More sensible stuff
+*/watsonx_cookbook.ipynb

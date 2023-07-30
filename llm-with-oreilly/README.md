@@ -1,0 +1,1 @@
+https://github.com/sinanuozdemir/oreilly-hands-on-gpt-llm
