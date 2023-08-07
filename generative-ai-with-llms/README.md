@@ -36,6 +36,8 @@ Casos de uso
 - Extração de entidades
 - _Augmented LLMs_: conexão com outras bases e APIs para prover dados não fornecidos no pré treino. Exemplo: perguntar a um modelo se um voo está atrasado ou não
 
+![Alt text](images/use-cases.png)
+
 ### Text generation before transformers
 
 Modelos usando RNNs escalam exponencialmente em escala para compreender mais tokens de uma amostra ao mesmo tempo (uma janela maior de entrada)
@@ -75,6 +77,8 @@ At the end a **softmax output** chooses one word and also sends it back to the *
 
 The output of the **encoder** is a deep representation of meaning and sequence of each word in the phrase used to influentiate the self-attention mecanism of the **decoder**
 
+![Alt text](images/encoding_decoding_schemes.png)
+
 **Encoder Only Models** are used to model generation only and classification tasks. Example: **BERT**
 
 **Encoder Decoder Models** performs well on Seq2Seq. These models can also be trained to general text generation. Example: BART
@@ -93,3 +97,126 @@ In summary:
 ## Project lifecycle
 
 ![Project lifecycle](images/llm-project-lifecycle.png)
+
+## Final project
+
+[Lab_1_summarize_dialogue.ipynb](introduction-to-llms/Lab_1_summarize_dialogue.ipynb)
+
+---
+
+##  LLM pre-training and scalling laws
+
+### Pre-training Large Language Models
+
+No hub de um modelo é possível encontrar "cards" com recomendação de prompts
+
+**Encoder only/Autoencoding models** são treinados por meio da inclusão de máscaras nas frases onde o modelo precisa reconstruir a amostra. O objetivo é chamado de _denoinsing_
+
+![Alt text](images/encoder-only-training.png)
+
+Casos de uso:
+
+- Análise de sentimentos
+- NER
+- Classificação de palavras
+
+**Decoder only/Autorregressive models** são treinados por meio da predição dos próximos tokens em uma amostra
+
+![Alt text](images/decoding-only-training.png)
+
+Casos de uso:
+
+- Geração de texto
+- Comportamentos modeláveis por prompt
+
+**Sequence-to-sequence/Encoding decoding models** são treinados por meio de correção de span. A amostra de treinamento possui um _Sentinel token_ que, não necessariamente indica uma única máscara na amostra original. O modelo então precisa reconstruir o span, trazendo todos os tokens daquele token
+
+![Alt text](images/encoding-decoding-training.png)
+
+Casos de uso:
+
+- Tradução
+- Sumarização
+- Q&A
+
+
+### Computational challenges
+
+**Recursos computacionais** podem ser mitigados por meio da **Quantização**
+
+![Alt text](images/quantization.png)
+
+Na quantização, os dados dos modelos, normalmente salvos em `FP32` são traduzidos para `FP16`, que é mais leve
+
+Uma outra forma de quantização é usando o `BFLOAT16`, ou `BF16`, na quantização. A técnica foi criada pelo Google e fica entre `FP32` e `FP16` e já é suportada por novas GPUs
+
+![Alt text](images/quantization2.png)
+
+Por possuir o mesmo _Exponent_, ela representa o mesmo intervalo, apesar de usar menos bits na representação do valor
+
+Modelos que suportam diferentes formas de quantização possuem a "classificação" _Quantization-aware training (QAT)_. Exemplo de modelo: `flan-t5`
+
+
+### Scaling laws and compute-optimal models
+
+3 parâmetros influenciam 
+
+![Alt text](images/compute_model.png)
+
+**petaflops/s-day** - Unidade de custo computacional. Equivale a 1 quadrilhão de operações _floating point_ por segundo ou 8 NVIDIA V100 operando durante 24h. O seguinte gráfico mostra o custo computacional de diferentes modelos
+
+![Alt text](images/pf-s-day.png)
+
+O tamanho do dataset de treinamento também pode ser determinado empiricamente, conforme visto em _Hoffman et al. 2022, "Training Compute-Optimal Large Language Models"_. As leis descritas são chamadas de _Chinchilla Scaling Laws_
+
+
+### Pre-traning for domain adaptation
+
+O pré treinamento é usado para adaptar o modelo a cenários pouco usuais. Exemplo: linguagem legal, médica
+
+BloombergGPT: adaptação para financas
+
+- 51% de dados financeiros e 49% de dados públicos
+- Foi usado o ponto ótimo de custo computacional e base de treinamento das _Chinchilla Scaling Laws_
+
+## Recursos - Semana 1
+
+Transformer Architecture
+
+Attention is All You Need
+- This paper introduced the Transformer architecture, with the core “self-attention” mechanism. This article was the foundation for LLMs.
+
+BLOOM: BigScience 176B Model 
+ - BLOOM is a open-source LLM with 176B parameters (similar to GPT-4) trained in an open and transparent way. In this paper, the authors present a detailed discussion of the dataset and process used to train the model. You can also see a high-level overview of the model 
+here
+.
+
+Vector Space Models
+ - Series of lessons from DeepLearning.AI's Natural Language Processing specialization discussing the basics of vector space models and their use in language modeling.
+
+Pre-training and scaling laws
+Scaling Laws for Neural Language Models
+ - empirical study by researchers at OpenAI exploring the scaling laws for large language models.
+
+Model architectures and pre-training objectives
+What Language Model Architecture and Pretraining Objective Work Best for Zero-Shot Generalization?
+ - The paper examines modeling choices in large pre-trained language models and identifies the optimal approach for zero-shot generalization.
+
+HuggingFace Tasks
+ and 
+Model Hub
+ - Collection of resources to tackle varying machine learning tasks using the HuggingFace library.
+
+LLaMA: Open and Efficient Foundation Language Models
+ - Article from Meta AI proposing Efficient LLMs (their model with 13B parameters outperform GPT3 with 175B parameters on most benchmarks)
+
+Scaling laws and compute-optimal models
+Language Models are Few-Shot Learners
+ - This paper investigates the potential of few-shot learning in Large Language Models.
+
+Training Compute-Optimal Large Language Models
+ - Study from DeepMind to evaluate the optimal model size and number of tokens for training LLMs. Also known as “Chinchilla Paper”.
+
+BloombergGPT: A Large Language Model for Finance
+ - LLM trained specifically for the finance domain, a good example that tried to follow chinchilla laws.
+
