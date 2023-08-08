@@ -220,3 +220,63 @@ Training Compute-Optimal Large Language Models
 BloombergGPT: A Large Language Model for Finance
  - LLM trained specifically for the finance domain, a good example that tried to follow chinchilla laws.
 
+---
+
+# Fine-tuning LLMs with instruction
+
+## Instruction fine-tuning
+
+Melhoria da performance de um modelo existente para um caso de uso específico processando novas amostras ao modelo
+
+Até então era usado In-Context Learning (ICL): _one/few shot inference_. Limitações:
+
+- Não funciona em moelos pequenos
+- Exemplos "roubam" espaço na janela de contexto
+
+_Prompt completion examples/Full fine tuning_: uso de novas amostras classificadas
+
+![Alt text](images/prompt-completion.png)
+
+Os passos de treinamento são: 
+
+**1. Preparação de base de dados**
+
+Bibliotecas de _prompt template_ podem ajudar a preparar a base de dados
+
+![Alt text](images/prompt-template.png)
+
+**2. Divisão entre treino, validação e teste**
+
+Lipsum
+
+**3. Treinamento**
+
+_Cross-Entropy_ pode ser usado como função de perda
+
+## Fine-tuning on a single task
+
+**_Catastrophic forgetting_**: aumento de performance em uma tarefa, enquanto em outras o modelo tem uma piora de performance
+
+Para evitar este problema:
+
+- De forma geral, pode não ser um problema caso o modelo esteja sendo preparado para uma única tarefa
+- _Fine-tuning_ em diferentes _tasks_
+- **_Parameter Efficient Fine-tuning (PEFT)_**: treina somente alguns parâmetros do modelo
+
+## Multi-task instruction fine-tuning
+
+Desvantagem: necessita de muitas amostras (500-1000)
+
+Exemplo de modelos: FLAN (Fine Tuning Language Net)
+
+![Alt text](images/flan.png)
+
+O FLAN-T5 foi treinado em 473 datasets escolhidos de outros modelos
+
+SAMSum é uma base usada para fazer o fine-tuning de modelos na tarefa de sumarização. Aqui, um exemplo de prompt para a tarefa:
+
+![Alt text](images/summarization-prompt.png)
+
+## Scaling instruct models
+
+FLAN é um fine tuning do modelo PaLM (540B). Link: https://arxiv.org/abs/2210.11416
