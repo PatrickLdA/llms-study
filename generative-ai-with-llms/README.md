@@ -28,7 +28,6 @@ Entrada de um modelo: prompt
 Modelo tenta prever a continuação do prompt. Caso a entrada seja uma pergunta, a saída será uma resposta
 
 Casos de uso
-
 - Q&A
 - Sumarização
 - Tradução
@@ -125,7 +124,6 @@ Casos de uso:
 ![Alt text](images/decoding-only-training.png)
 
 Casos de uso:
-
 - Geração de texto
 - Comportamentos modeláveis por prompt
 
@@ -175,7 +173,6 @@ O tamanho do dataset de treinamento também pode ser determinado empiricamente, 
 O pré treinamento é usado para adaptar o modelo a cenários pouco usuais. Exemplo: linguagem legal, médica
 
 BloombergGPT: adaptação para financas
-
 - 51% de dados financeiros e 49% de dados públicos
 - Foi usado o ponto ótimo de custo computacional e base de treinamento das _Chinchilla Scaling Laws_
 
@@ -229,7 +226,6 @@ BloombergGPT: A Large Language Model for Finance
 Melhoria da performance de um modelo existente para um caso de uso específico processando novas amostras ao modelo
 
 Até então era usado In-Context Learning (ICL): _one/few shot inference_. Limitações:
-
 - Não funciona em moelos pequenos
 - Exemplos "roubam" espaço na janela de contexto
 
@@ -258,7 +254,6 @@ _Cross-Entropy_ pode ser usado como função de perda
 **_Catastrophic forgetting_**: aumento de performance em uma tarefa, enquanto em outras o modelo tem uma piora de performance
 
 Para evitar este problema:
-
 - De forma geral, pode não ser um problema caso o modelo esteja sendo preparado para uma única tarefa
 - _Fine-tuning_ em diferentes _tasks_
 - **_Parameter Efficient Fine-tuning (PEFT)_**: treina somente alguns parâmetros do modelo
@@ -280,3 +275,78 @@ SAMSum é uma base usada para fazer o fine-tuning de modelos na tarefa de sumari
 ## Scaling instruct models
 
 FLAN é um fine tuning do modelo PaLM (540B). Link: https://arxiv.org/abs/2210.11416
+
+## Model evaluation
+
+Recall Oriented U G Evaluation (ROUGE)
+- Usada para sumarização
+- Compara o sumário a um ou mais referências
+
+BiLingual Evaluation Understanding (BLEU)
+- Usada para tradução
+- Compara com traduções geradas por humanos
+
+**ROUGE**
+
+$ROUGE-1-Recall = {unigram\_matches \over unigrams\_in\_reference}$
+
+$ROUGE-1-Precision = {unigram\_matches \over unigrams\_in\_output}$
+
+$ROUGE-1-F1 = {precision \times recall \over precision + recall}$
+
+![Alt text](images/rouge.png)
+
+O problema com a métrica é que a mesma não considera a ordem das palavras. Usando bigramas, temos a ROUGE-2 e assim sucessivamente
+
+**ROUGE-L**
+
+Compara-se $y$ e $\hat{y}$, encontrase a _Longest Common Subsequence_ (LCS) e o ROUGE é feito com esse valor
+
+![rouge-l](images/rouge-l.png)
+
+**BLEU**
+
+Média da precisão em um range de n-gramas
+
+# Parameter Efficient Fine-Tuning (PEFT)
+
+Técnicas para evitar um grande custo computacional no fine-tuning podem:
+- Retreinar somente as últimas camadas de um modelo
+- Adicionar novas camadas ao fim do modelo
+
+O aramzenamento de várias versões de um mesmo modelo após o fine-tuning pode ser muito custoso computacionalmente. Com isso, as técnicas de armazenamento focam em salvar somente as novas camadas/camadas retreinadas do modelo
+
+![Alt text](images/peft_storaging.png)
+
+**Selective**
+
+Só faz o fine-tuning de alguns parâmetros
+- Primeiras camadas
+- Últimas camadas
+- Camadas e parâmetros específicas
+
+**Reparameterization**
+
+Reparametriza o modelo usando uma representação _low-rank_. Exemplo: LoRA
+
+**Additive**
+
+Adiciona novas camadas
+- Adapters: novas camadas treináveis (dentro do _encoder_ ou do _decoder_ depois da camada de _feedfoward_)
+- Soft Prompts: adição de parâmetros à entrada, como na camada de _embedding_ do prompt. Exemplo: _Prompt Tuning_
+
+## Low-Rank Adaptation (LoRA)
+
+Injeta um conjunto de pesos em paralelo aos pesos do modelo original. A técnica pode ser usada em outras camadas do modelo, embora menos usual
+
+![Alt text](images/lora_training.png)
+
+## Soft prompts
+
+Prompt tuning != Prompt engineering
+
+Adição de tokens para que o modelo tente adivinhar
+
+![Alt text](images/soft_prompt.png)
+
+Esses tokens podem (e devem) mudar para tasks diferentes
