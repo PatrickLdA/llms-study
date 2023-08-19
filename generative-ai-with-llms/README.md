@@ -350,3 +350,41 @@ Adição de tokens para que o modelo tente adivinhar
 ![Alt text](images/soft_prompt.png)
 
 Esses tokens podem (e devem) mudar para tasks diferentes
+
+# Reinforcement learning from human feedback
+
+## Alligning models with human values
+
+Modelos podem apresentar alguns problemas, tais como:
+- Linguagem tóxica
+- Respostas agressivas
+- Informações perigosas
+
+## Reinforcement Learning from Human Feedback (RLHF)
+
+Maximização da utilidade e minimização dos riscos
+
+![Alt text](images/rlhf.png)
+
+A "recompensa" das tasks é usada para adaptar os pesos em acordo com classificações humanas
+
+![Alt text](images/human_feedback.png)
+
+Uma base pode ser classificada por uma série de curadores, de forma a classificarem a qualidade de cada resultado
+
+Em seguida, as possibilidades são combinadas em pares e ordenadas com base na preferência
+
+![Alt text](images/human_feedback_2.png)
+
+![Alt text](images/human_feedback_3.png)
+
+## Proximal Policy Optimization
+
+![Alt text](images/human_feedback_4.png)
+
+1. Create completions: the LLM complete a bunch of completitions for given prompts
+2. Calculate rewards
+3. Calculate value loss: on each token generated, a estimated future total reward is calculated
+4. The estimated future total reward is compared to the actual reward
+5. A small model update is made (**Phase 2**)
+6. Calculate policy loss
