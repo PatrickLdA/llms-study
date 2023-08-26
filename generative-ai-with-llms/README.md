@@ -362,29 +362,86 @@ Modelos podem apresentar alguns problemas, tais como:
 
 ## Reinforcement Learning from Human Feedback (RLHF)
 
-Maximização da utilidade e minimização dos riscos
+Maximização da utilidade e minimização dos riscos. Também pode ser usada para hiperpersonalização, "aprendendo" os gostos de cada usuário
 
 ![Alt text](images/rlhf.png)
 
 A "recompensa" das tasks é usada para adaptar os pesos em acordo com classificações humanas
 
+Além disso, um modelo de recompensa pode ser usado no lugar da classificação humana de todos os outputs
+
+### Human feedback
+
+Um conjunto de outputs do modelo é curado por humanos, com um critério de alinhamento do modelo. No exemplo abaixo, uma série de curadores categorizam as saídas com base na utilidade de cada um
+
 ![Alt text](images/human_feedback.png)
 
-Uma base pode ser classificada por uma série de curadores, de forma a classificarem a qualidade de cada resultado
+Um exemplo de instrução para as classificações:
 
-Em seguida, as possibilidades são combinadas em pares e ordenadas com base na preferência
+![Alt text](images/human_instructions_labelling.png)
+
+1. Ideia geral da tarefa
+2. Como tomar uma decisão com base nos critérios de alinhamento buscados
+3. Como lidar com empates
+4. O que fazer em caso de respostas confusas ou irrelevantes. **Essa instrução garante que haverão respostas de alta qualidade**
+
+Em seguida:
+
+1. As saídas são agrupadas em duplas
+2. Um vetor de recompensa $Reward$ identifica qual a saída preferida entre as duas
+3. As saídas são rearranjadas com base na preferência
+
+Assim, o **modelo de recompensa** poderá ser treinado
 
 ![Alt text](images/human_feedback_2.png)
 
+### Reward model
+
+Com isso, um modelo pode ser treinado para priorizar classificações similares às primeiras dos pares ordenados com base na classificação humana
+
 ![Alt text](images/human_feedback_3.png)
 
-## Proximal Policy Optimization
+### Assembling the process
 
-![Alt text](images/human_feedback_4.png)
+1. Um prompt é injetado no LLM. Ex: "A dog is..."
+2. O LLM gera uma saída. Ex: "... a furry animal"
+3. O resultado é enviado ao _Reward Model_, que retorna uma nota para o resultado
+4. O valor é enviado para um algoritmo de _Reinforcement learning_ (RL) que vai adaptar os pesos do modelo
+5. O processo se repete iterativamente
+
+![Alt text](images/rhlf_process.png)
+
+O algoritmo de RL pode ser, por exemplo, um modelo de **Proximal Policy Optimization**
+
+### Proximal Policy Optimization
 
 1. Create completions: the LLM complete a bunch of completitions for given prompts
 2. Calculate rewards
 3. Calculate value loss: on each token generated, a estimated future total reward is calculated
 4. The estimated future total reward is compared to the actual reward
 5. A small model update is made (**Phase 2**)
-6. Calculate policy loss
+6. Calculate entropy loss: used to maintain creativity of the LLM
+7. Objective function
+
+$$L^{PPO}=L^{POLICY}+c_1L^{VF}+c_2L^{ENT}$$
+
+## Reward Hacking
+
+Problema que pode ocorrer onde o modelo aprende a maximizar a função de recompensa, mesmo que os outputs não tenham qualidade
+
+Para evitar esse problema, um modelo de referência pode ser usado, onde o seu output pode ser comparado ao LLM atualizado por meio da **KL Divergence Shift Penalty**, que vai indicar o desvio do modelo treinado comparando as distribuições dos próximos tokens. A saída da comparação pode ser adicionada ao score do modelo de recompensa
+
+Referência para estudar o uso do KL: https://huggingface.co/blog/trl-peft
+
+![Alt text](images/reward_hacking.png)
+
+## Scaling human feedback
+
+Constitutional AI: inicialmente, uma base "limpa" é gerada a partir de uma série de prompts
+
+![Alt text](images/constitutional_ai.png)
+
+Em seguida, o modelo é treinamento
+
+![Alt text](images/constitutional_ai_2.png)
+
