@@ -445,3 +445,111 @@ Em seguida, o modelo é treinamento
 
 ![Alt text](images/constitutional_ai_2.png)
 
+# LLM-powered applications
+
+Limitações:
+
+- Velocidade
+- Budget
+- Recursos computacionais
+- LLM aumentada: conectada a outras bases ou recursos?
+- Como os dados serão consumidos?
+
+## Otimização
+
+Uma das formas de otimizar a performance da aplicação é por meio da **redução do modelo**. 3 técnicas podem ser usadas:
+
+![Alt text](images/optimization_tecniques.png)
+
+### Distillation
+
+Um modelo _teacher_ passa seu conhecimento para um modelo _student_, menor e mais leve computacionalmente
+
+1. Criação de uma base de compleções dos modelos _teacher_ e _student_ a partir de uma base de treinamento em comum
+2. Calculo da _distillation loss_ olhando para as probabilidades na geração dos tokens entre os dois modelos
+3. Otimização dos pesos do _student_ afim de minimizar a _distillation loss_ entre as gerações com a temperatura `T>1`
+4. Treinamento do modelo _student_ com a base de treinamento usando `T=1` por meio da _student loss_
+
+Obs: a técnica é mais útil em modelos _encoder only_
+
+![Alt text](images/distillation.png)
+
+### Quantização
+
+Uso de técnicas de quantização, como `16-bit`
+
+### Pruning
+
+Remoção de parâmetros redundantes que não estão contribuindo para a performance do modelo. Normalmente são valores iguais ou próximo a zero
+
+Técnicas:
+
+- Re-treino do modelo
+- PEFT/LoRA
+- Pós treinamento
+
+## Tempo do ciclo de um projeto baseado em LLM
+
+![Alt text](images/timeline_project.png)
+
+## Models having difficulty
+
+Problemas que podem acontecer com uma LLM:
+
+- Desatualização
+- Respostas erradas
+- Alucinação
+
+Para resolver esse problema, a aplicação pode integrar a LLM a aplicações e bases de dados externas
+
+**Retrieval Augmented Generation (RAG)** pode ajudar a sanar problemas de desatualização ao disponibilizar bases de conhecimento consultáveis
+
+1. A requisição é codificada
+2. A mesma passa por uma base de informações externa, normalmente um **_vector store_**
+3. Amostras de conhecimento pertinentes a requisição feita é extraída
+4. As amostras são adicionadas à requisição, que é então enviada ao LLM
+
+![Alt text](images/rag.png)
+
+Algumas limitações para a base de conhecimento:
+
+- Os dados precisam caber dentro da janela de contexto
+- Dados precisam estar em um formato de rápida recuperação dos dados
+
+## Chain-of-thought
+
+Quebra do prompt em passos lógicos para facilitar o entendimento da entrada
+
+## Program-Aided Language model (PAL)
+
+O modelo quebra o problema apresentado em linguagem de computação e a mesma é resolvida computacionalmente
+
+![Alt text](images/pal.png)
+
+A resposta computacionalmente gerada é então inserida novamente no LLM para que o mesmo formate a resposta
+
+Para estruturar como a requisição será tratada, um _Orchestration library_ pode ser usado
+
+![Alt text](images/orchestration_library.png)
+
+## ReAct: Combining reasoning and action
+
+Técnica usada para resolver problemas complexos, que podem envolver múltiplas buscas a bases de conhecimentos externas, por exemplo. Passo a passo:
+
+1. Question: o que precisa ser resolvido
+2. Thought: como deve ser resolvido? Quais as etapas do processo de resolução?
+3. Action: lista de ações a serem performadas (via API, por exemplo)
+4. Observation: obtenção de dados a partir das ações tomadas
+5. O processo é repetido iterativamente, parte a parte do prompt
+6. Todo o conhecimento reunido é usado para construir a resposta final
+
+![Alt text](images/react.png)
+
+![Alt text](images/react_steps.png)
+
+Um framework famoso de ReAct é o **LangChain**
+
+## Application architectures
+
+![Alt text](images/architectures.png)
+
