@@ -37,6 +37,8 @@ Chunking can happen in different ways
 
 ![Alt text](images/vectorstore.png)
 
+[Notebook 03_vectorstores_and_embeddings](notebooks/03_vectorstores_and_embeddings.ipynb)
+
 # Retrieval
 
 ## Maximum Marginal Relevance (MMR)
@@ -59,4 +61,28 @@ How
 
 ![Alt text](images/compression.png)
 
-[Notebook](https://learn.deeplearning.ai/langchain-chat-with-your-data/lesson/5/retrieval)
+[Notebook 04_retrieval](notebooks/04_retrieval.ipynb)
+
+
+# Question Answering
+
+![Alt text](images/qa_chain.png)
+
+To deal with the problem of short context window, there are 3 methods:
+
+- Map_reduce: each chunk is sent to the model and the answers are sent together to a final response. Slower
+- Refine
+- Map_rerank
+
+![Alt text](images/methods_context_window.png)
+
+[Notebook 05_question_answering.ipynb](notebooks/05_question_answering.ipynb)
+
+
+# Chat
+
+Similar as previous content, but with a `Chat history`
+
+![Alt text](images/chat_llm.png)
+
+[Notebook 06_chat.ipynb](notebooks/06_chat.ipynb)
